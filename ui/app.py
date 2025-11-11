@@ -44,18 +44,15 @@ class App(TkinterDnD.Tk):
         customtkinter.set_appearance_mode("Light")
         customtkinter.set_default_color_theme("modern_dark.json")
 
-        # configure window
         self.title("Decodr - Image analysis")
         self.geometry(f"{1100}x{580}")
         self.attributes("-fullscreen", False)
         self.resizable(False, False)
 
-        # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure((2, 3), weight=0)
         self.grid_rowconfigure((0, 1, 2), weight=1)
 
-        # sidebar (idem ton code)
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
@@ -77,7 +74,6 @@ class App(TkinterDnD.Tk):
                                                                command=self.change_scaling_event)
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
 
-        # Boutons Analysis + Restart OCR (idem)
         self.button_frame = customtkinter.CTkFrame(self, fg_color="transparent")
         self.button_frame.grid(row=1, column=1, padx=(20, 0), pady=(0, 0), sticky="n")
         largeur_totale = 240
@@ -103,74 +99,58 @@ class App(TkinterDnD.Tk):
         )
         self.main_button_2.grid(row=0, column=1)
 
-        # Configure la grille principale
+
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=0)
         self.grid_columnconfigure(1, weight=1) 
 
-        # Crée le conteneur central
         self.center_container = customtkinter.CTkFrame(self, fg_color="#47506B", corner_radius=0)
         self.center_container.grid(row=0, column=1, padx=5, pady=5) # "sticky="nsew"
 
-        # Configure la grille du conteneur central pour accueillir canvas + scrollbars
         self.center_container.grid_rowconfigure(0, weight=1)
         self.center_container.grid_columnconfigure(0, weight=1)
 
-        # Canvas dans le container
         self.center_canvas = tk.Canvas(self.center_container, bg="#1A1A1A", highlightthickness=0)
         self.center_canvas.config(width=600, height=310)
         self.center_canvas.grid(row=0, column=0) # "sticky="nsew"
 
-        # Scrollbars dans le container
         self.scrollbar_y = ttk.Scrollbar(self.center_container, orient="vertical", command=self.center_canvas.yview)
         self.scrollbar_y.grid(row=0, column=1, sticky="ns")
 
         self.scrollbar_x = ttk.Scrollbar(self.center_container, orient="horizontal", command=self.center_canvas.xview)
         self.scrollbar_x.grid(row=1, column=0, sticky="ew")
 
-        # Configure le canvas pour utiliser les scrollbars
         self.center_canvas.configure(yscrollcommand=self.scrollbar_y.set, xscrollcommand=self.scrollbar_x.set)
 
-        # Frame qui contiendra l’image dans le canvas
         self.image_frame = customtkinter.CTkFrame(self.center_canvas, fg_color="#1A1A1A", corner_radius=0)
         self.canvas_window = self.center_canvas.create_window((0, 0), window=self.image_frame, anchor="nw")
 
-        # Bind pour ajuster la scrollregion
         self.image_frame.bind("<Configure>", self.update_scrollregion)
         self.center_canvas.bind("<Configure>", self.resize_canvas)
 
-        # Label dans image_frame
         self.image_label = tk.Label(self.image_frame, bg="#1A1A1A", text="Drop or open an image", fg="white")
         self.image_label.grid(row=0, column=0, sticky="nsew")
 
-        # Configuration poids dans image_frame
         self.image_frame.grid_rowconfigure(0, weight=1)
         self.image_frame.grid_columnconfigure(0, weight=1)
 
-        # Configure la grille principale pour la ligne 2 aussi
-        self.grid_rowconfigure(2, weight=0)  # hauteur fixe pour la zone texte
-        self.grid_columnconfigure(1, weight=1)  # même colonne 1 que canvas/image
+        self.grid_rowconfigure(2, weight=0)
+        self.grid_columnconfigure(1, weight=1)
 
-        # Crée un conteneur pour la zone texte (sous image et boutons)
         self.text_frame = customtkinter.CTkFrame(self, width=250, height=150, corner_radius=10, border_width=2, border_color="gray")
         self.text_frame.grid(row=2, column=1, padx=(20, 0), pady=(10, 0), sticky="nsew")
 
-        # Configure la grille interne du conteneur text_frame
         self.text_frame.grid_rowconfigure(0, weight=1)
         self.text_frame.grid_columnconfigure(0, weight=1)
 
-        # Text widget pour OCR
         self.text_box = tkinter.Text(self.text_frame, wrap="word", height=8)
         self.text_box.grid(row=0, column=0, sticky="nsew")
 
-        # Scrollbar verticale pour la text_box
         self.text_scrollbar = tkinter.Scrollbar(self.text_frame, command=self.text_box.yview)
         self.text_scrollbar.grid(row=0, column=1, sticky="ns")
 
-        # Lier la scrollbar au text_box
         self.text_box.config(yscrollcommand=self.text_scrollbar.set)
 
-        # Tabview (idem)
         self.tabview = customtkinter.CTkTabview(self, width=250, height=180)
         self.tabview.grid(row=0, column=2, padx=(20, 10), pady=(20, 10), sticky="n")
         self.tabview.add("General")
@@ -184,11 +164,10 @@ class App(TkinterDnD.Tk):
         self.combobox_2.grid(row=1, column=0, padx=20, pady=(10, 10))
         self.save_button = customtkinter.CTkButton(self.tabview.tab("General"),
             text="Save As...",
-            command=lambda: self.open_file_explorer()  # Récupère le texte OCR
+            command=lambda: self.open_file_explorer()
         )
         self.save_button.grid(row=2, column=0, padx=20, pady=(10, 10))
 
-        # Bottom frame = graphique matplotlib
         self.bottom_frame = customtkinter.CTkFrame(self, height=180, corner_radius=10, fg_color="transparent",
                                                   border_width=1, border_color="gray")
         self.bottom_frame.grid(row=2, column=2, padx=(20, 10), pady=(0, 10), sticky="nsew")
@@ -199,10 +178,10 @@ class App(TkinterDnD.Tk):
         self.canvas.get_tk_widget().pack(expand=True, fill="both")
         self.scrollbar_y.grid(row=0, column=1, sticky="ns")
 
-        self.draw_percent_pie(0)  # Init à 0%
+        self.draw_percent_pie(0)
 
-        # Variables
-        self.loaded_image = None  # stocker l'image PIL pour analyse
+
+        self.loaded_image = None
 
         # set defaults
         self.appearance_mode_optionemenu.set("Light")
@@ -227,13 +206,11 @@ class App(TkinterDnD.Tk):
         content_width = bbox[2] - bbox[0]
         content_height = bbox[3] - bbox[1]
 
-        # Afficher/masquer la scrollbar verticale
         if content_height > canvas_height:
             self.scrollbar_y.grid(row=0, column=1, sticky="ns")
         else:
             self.scrollbar_y.grid_forget()
 
-        # Afficher/masquer la scrollbar horizontale
         if content_width > canvas_width:
             self.scrollbar_x.grid(row=1, column=0, sticky="ew")
         else:
@@ -242,7 +219,7 @@ class App(TkinterDnD.Tk):
     def draw_percent_pie(self, percent):
         self.ax.clear()
         sizes = [percent, 100 - percent]
-        colors = ['#4CAF50', '#E0E0E0']  # Vert et gris clair
+        colors = ['#4CAF50', '#E0E0E0']
 
         wedges, _ = self.ax.pie(
             sizes,
@@ -261,11 +238,9 @@ class App(TkinterDnD.Tk):
             messagebox.showwarning("Warning", "Please upload an image first.")
             return
 
-        # 1️⃣ Correction d’orientation et redressement
         oriented = correct_orientation(self.loaded_image)
         deskewed = deskew_image(oriented)
 
-        # 2️⃣ Sélection de la langue et du mode
         selected_lang = self.combobox_1.get()
 
         if selected_lang == "English":
@@ -281,14 +256,11 @@ class App(TkinterDnD.Tk):
             lang = "eng"
             mode = "print"
 
-        # 3️⃣ Prétraitement de l’image selon la langue
         processed = preprocess_image(oriented, mode=mode)
         processed.info['dpi'] = (300, 300)
 
-        # 4️⃣ Configuration OCR
         config = "--oem 3 --psm 6 -c preserve_interword_spaces=1"
 
-        # 5️⃣ OCR complet
         data = pytesseract.image_to_data(processed, lang=lang, config=config, output_type=pytesseract.Output.DICT)
 
         ocr_text = " ".join([
@@ -303,15 +275,12 @@ class App(TkinterDnD.Tk):
         tokens = tokenizer.encode(ocr_text, return_tensors="pt")
         print(f"Nombre de tokens : {tokens.shape[1]}")
 
-        # 🧹 Nettoyage du texte OCR
         clean_text = clean_ocr_text(ocr_text)
 
-        # 6️⃣ Affiche le texte OCR nettoyé
         print("Texte brut OCR nettoyé :\n", clean_text)
         self.text_box.delete("1.0", tkinter.END)
         self.text_box.insert(tk.END, clean_text)
 
-        # 7️⃣ Affiche les boîtes de détection
         self.display_boxes_on_image(processed, lang=lang)
 
 
@@ -393,7 +362,7 @@ class App(TkinterDnD.Tk):
                 text = docx2txt.process(filepath)
                 self.text_box.delete("1.0", tkinter.END)
                 self.text_box.insert(tkinter.END, text)
-                self.loaded_image = None  # Pas d’image à traiter
+                self.loaded_image = None
             else:
                 messagebox.showerror("Erreur", "Type de fichier non supporté.")
         except Exception as e:
@@ -401,21 +370,17 @@ class App(TkinterDnD.Tk):
  
     def display_image(self, image):
         try:
-            self.current_image = image  # pour traitements ultérieurs
+            self.current_image = image
 
-            # Supprime l'image précédente si elle existe
             if hasattr(self, 'image_label'):
                 self.image_label.destroy()
 
-            # Convertit l'image pour tkinter
             tk_image = ImageTk.PhotoImage(image)
-            self.tk_image = tk_image  # garder une référence
+            self.tk_image = tk_image
 
-            # Affiche dans image_frame (qui est dans center_canvas)
             self.image_label = customtkinter.CTkLabel(self.image_frame, image=tk_image, text="")
             self.image_label.pack()
 
-            # Met à jour la scrollregion et active les scrollbars si nécessaire
             self.center_canvas.update_idletasks()
             self.center_canvas.configure(scrollregion=self.center_canvas.bbox("all"))
             self.toggle_scrollbars()
@@ -435,10 +400,8 @@ class App(TkinterDnD.Tk):
         selected_language = self.combobox_1.get()
         selected_format = self.combobox_2.get()
 
-        # Récupérer le texte OCR directement depuis la zone texte
         ocr_text = self.text_box.get("1.0", "end-1c")
 
-        # Traduction
         if selected_language == "French":
             traduction = GoogleTranslator(source='auto', target='fr').translate(ocr_text)
         elif selected_language == "Chinese":
@@ -446,7 +409,6 @@ class App(TkinterDnD.Tk):
         else:
             traduction = GoogleTranslator(source='auto', target='en').translate(ocr_text)
 
-        # Ouvre l'explorateur de fichiers
         filetypes = [(f"{selected_format.upper()} files", f"*{selected_format}"), ("All files", "*.*")]
         filepath = filedialog.asksaveasfilename(defaultextension=selected_format, filetypes=filetypes)
 
