@@ -2,7 +2,7 @@
 
 Decodr is a desktop application for analyzing images and extracting text from manuscripts using OCR. It supports multiple languages and provides features like text correction, translation, and confidence visualization.
 
-<img width="1097" height="609" alt="image" src="https://github.com/user-attachments/assets/9ed3d6a7-3c6f-4e93-9b21-8e05d77068e5" />
+<img width="1099" height="609" alt="image" src="https://github.com/user-attachments/assets/eb9841e4-5f4c-4b97-bd27-883619681784" />
 
 ## Features
 
