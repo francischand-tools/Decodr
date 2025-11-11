@@ -1,25 +1,18 @@
-# Environnements virtuels
-venv/
-.env
-
-# Cache Python
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.env
 
-# Fichiers système
-.DS_Store
-Thumbs.db
+# Virtual env
+venv/
+.env
 
 # IDE
 .vscode/
 .idea/
 
-# Fichiers lourds / cache modèles
-*.pt
-*.bin
-cache/
-transformers_cache/
-
-# Build et sortie
-build/
-dist/
+# OS
+.DS_Store
+Thumbs.db
