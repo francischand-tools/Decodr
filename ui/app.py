@@ -28,6 +28,7 @@ from deep_translator import GoogleTranslator
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
 
 from config.settings import TESSERACT_PATH, JAVA_HOME
+from config.settings import tokenizer
 from ocr.orientation import correct_orientation, deskew_image
 from ocr.preprocessing import preprocess_image
 from ocr.text_cleaning import clean_ocr_text
